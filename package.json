@@ -1,0 +1,29 @@
+{
+    "name": "numerical-methods-explorer",
+    "scripts": {
+        "build": "browserify app/main.js -t [ babelify ] | uglifyjs > public/bundle.min.js",
+        "watch": "watchify app/main.js -o public/bundle.js --debug --verbose -t [ babelify ]"
+    },
+    "author": "Darren K Maczka <dkm@utk.ed>",
+    "license": "GPL-3.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/hazybluedot/numeric_calc_viz.git"
+    },
+    "dependencies": {
+        "katex": "^0.11.1",
+        "markdown-it": "^10.0.0",
+        "markdown-it-anchor": "^5.2.4",
+        "markdown-it-attrs": "^3.0.1",
+        "markdown-it-container": "^2.0.0",
+        "markdown-it-footnote": "^3.0.2",
+        "markdown-it-katex": "^2.0.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.0",
+        "@babel/preset-env": "^7.6.0",
+        "@babel/plugin-proposal-class-properties": "^7.5.5",
+        "@babel/plugin-proposal-decorators": "^7.6.0",
+        "babelify": "^10.0.0"
+    }
+}
