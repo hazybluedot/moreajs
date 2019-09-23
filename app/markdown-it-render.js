@@ -1,9 +1,9 @@
-    MarkdownIt = require('markdown-it'),
+let MarkdownIt = require('markdown-it'),
     md = new MarkdownIt(),
     mk = require('markdown-it-katex'),
     mc = require('markdown-it-container');
 
-markdownContainers = [
+let markdownContainers = [
     {
 	name: 'section',
 	validate: regexValidator(/^section\s+(.*)$/),
@@ -60,9 +60,7 @@ function regexValidator(regex) {
     };
 }
 
-module.exports = function(idx, el) {
-    var rawContent = el.innerHTML;
-    // check leading whitespace on first line of content
+function renderString(rawContent) {
     var lines = rawContent.split('\n');
     var whitespace = null;
     var i = 0;
@@ -77,5 +75,17 @@ module.exports = function(idx, el) {
 	    return acc;
 	}, "");
     }
-    el.innerHTML = md.render(rawContent);
+
+    return md.render(rawContent);
+}
+
+module.exports = {
+    renderString: renderString,
+    
+    renderElement: function(idx, el) {
+	var rawContent = el.innerHTML;
+	// check leading whitespace on first line of content
+	
+	el.innerHTML = md.render(renderString(rawContent));
+    }
 };
