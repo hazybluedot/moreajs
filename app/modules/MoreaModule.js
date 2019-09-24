@@ -16,7 +16,6 @@ module.exports = class Module extends Component {
     
     render() {
 	let content = mdrender.renderString(this.props.module.content);
-	
 	return (
 	    <section className="morea-module">
 	    <h1>{this.props.module.title}</h1>
