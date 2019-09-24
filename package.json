@@ -1,8 +1,9 @@
 {
-    "name": "numerical-methods-explorer",
+    "name": "morea-react",
     "scripts": {
-        "build": "browserify app/main.js -t [ babelify ] | uglifyjs > public/bundle.min.js",
-        "watch": "watchify app/main.js -o public/bundle.js --debug --verbose -t [ babelify ]"
+	"deploy": "browserify app/main.js -r ./deploy.js:config -t [ babelify ] | uglifyjs > ~/Sites/EF105_Fall2019/static/js/moreajs.min.js",
+        "build": "browserify app/main.js -r ./local.js:config -t [ babelify ] | uglifyjs > public/bundle.min.js",
+        "watch": "watchify app/main.js -r ./deploy.js:config -o public/bundle.js --debug --verbose -t [ babelify ]"
     },
     "author": "Darren K Maczka <dkm@utk.ed>",
     "license": "GPL-3.0",
@@ -18,6 +19,7 @@
         "markdown-it-container": "^2.0.0",
         "markdown-it-footnote": "^3.0.2",
         "markdown-it-katex": "^2.0.3",
+        "process": "^0.11.10",
         "react": "^16.9.0",
         "react-dom": "^16.9.0"
     },
