@@ -3,7 +3,7 @@ import MoreaModule from "./MoreaModule.js"
 import ErrorBoundary from "./ErrorBoundary.js"
 
 module.exports = class Module extends Component {
-    renderModule(module) {
+  renderModule(module, options) {
 	{console.log('module props', module)}
 	
 	let ordered_ids = ['outcomes', 'readings', 'experiences', 'assessments'].reduce((ids, type) => {
@@ -24,14 +24,14 @@ module.exports = class Module extends Component {
 	console.log('items', items);
 
 	return (<ErrorBoundary key={module.morea_id}>
-		<MoreaModule key={module.morea_id} module={module} items={items} />
+		<MoreaModule key={module.morea_id} module={module} items={items} options={options} />
 		</ErrorBoundary>);
     }
     
     render() {
-	console.log('MoreaSequence props', this.props.props);
+	console.log('MoreaSequence props', this.props);
 	return(
-	    this.props.modules.map(this.renderModule)
+	  this.props.modules.map(module => this.renderModule(module, this.props.options))
 	);
     };
 }

@@ -1,9 +1,10 @@
 {
     "name": "morea-react",
     "scripts": {
-	"deploy": "browserify app/main.js -r ./deploy.js:config -t [ babelify ] | uglifyjs > ~/Sites/EF105_Fall2019/static/js/moreajs.min.js",
-        "build": "browserify app/main.js -r ./local.js:config -t [ babelify ] | uglifyjs > public/bundle.min.js",
-        "watch": "watchify app/main.js -r ./deploy.js:config -o public/bundle.js --debug --verbose -t [ babelify ]"
+        "deploy": "npm run build && scp public/bundle.min.js efcms:~/js/moreajs.min.js",
+        "build": "browserify app/main.js -r ./deploy.js:config -t [ babelify ] | uglifyjs > public/bundle.min.js",
+        "watch": "watchify app/main.js -r ./deploy.js:config -o public/bundle.js --debug --verbose -t [ babelify ]",
+        "lint": "eslint --fix app/*.js"
     },
     "author": "Darren K Maczka <dkm@utk.ed>",
     "license": "GPL-3.0",
@@ -17,6 +18,8 @@
         "markdown-it-anchor": "^5.2.4",
         "markdown-it-attrs": "^3.0.1",
         "markdown-it-container": "^2.0.0",
+        "markdown-it-decorate": "^1.2.2",
+        "markdown-it-deflist": "^2.0.3",
         "markdown-it-footnote": "^3.0.2",
         "markdown-it-katex": "^2.0.3",
         "process": "^0.11.10",
@@ -29,6 +32,13 @@
         "@babel/plugin-proposal-decorators": "^7.6.0",
         "@babel/preset-env": "^7.6.0",
         "@babel/preset-react": "^7.0.0",
-        "babelify": "^10.0.0"
+        "babelify": "^10.0.0",
+        "eslint": "^6.4.0",
+        "eslint-config-standard": "^14.1.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-node": "^10.0.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-react": "^7.14.3",
+        "eslint-plugin-standard": "^4.0.1"
     }
 }
