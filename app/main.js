@@ -1,6 +1,5 @@
 const config = require('config')
 
-console.log('config', config)
 const Morea = require('./morea.js')
 const mdrender = require('./markdown-it-render.js')
 // morea_render = new Morea({ apibase: 'https://efcms.engr.utk.edu/ef105-2019-08/api/morea' });
@@ -17,7 +16,6 @@ function sectionToggleHandler(el) {
   var sec = $(el.currentTarget).parent();
   //let module_content = sec.children('.module-content');
   //sec = module_content.length > 0 ? module_content.first() : sec;
-  //console.log('toggeling element', el, 'section', sec);
   sec.children('.content').toggle();
   if (sec.children('.content').css('display') == 'none') {
     sec.find('h2 button, h1 button').text('+');
@@ -31,14 +29,16 @@ function collapseAll() {
 }
 
 jQuery(function () {
+  let attachSvg = require('../lib/attachSvg.js');
+  
   jQuery.fn.comments = require('./jquery-comments.js');
   $('.markdownit').each((idx, el) => {
     mdrender.renderElement(idx, el);
-    $(el).find('.collapsable').children('h1', 'h2', 'h3').first()
+    $(el).children('section')
+      .addClass('collapsable').children('h1', 'h2', 'h3').first()
       .on("click", sectionToggleHandler)
+      .prepend($('<button>+</button>'))
   })
-
-  // $('.morea').each((idx, el) => morea_render.render(idx, el));
 
   let data = $.map($('.morea'), (el) => {
     data = morea_render.data(el)
@@ -50,7 +50,8 @@ jQuery(function () {
     instance.promise
       .then((e) => MoreaReact(e, instance.root, instance.args))
       .then(() => {
-        $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience').each((idx, el) => {
+        let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
+        morea_sections.each((idx, el) => {
           const $section = $(el)
           //console.log('appending button to ', el);
           $section.addClass('collapsable').children('h1, h2, h3')
@@ -60,6 +61,21 @@ jQuery(function () {
         })
 	  	  
         collapseAll();
+
+        $('section').each((idx, el) => {
+          let $sec = $(el);
+          if ($sec.children('section').length == 0) {
+            $sec.addClass("row");            
+            let content = $sec.children('.content').first();
+            let asides = content.children('aside');
+            if (asides.length > 0) {
+              let main = content.children(':not(aside)');
+              
+              main.wrapAll($('<div />', {"class": "col-md-8"}));
+              asides.wrapAll($('<div />', {"class": "col-md-4"}));
+            }
+          }
+        });
 
         $('img').each((idx, el) => {
           const src = el.getAttribute('src').split('\.')
@@ -71,14 +87,16 @@ jQuery(function () {
         $('img.screencap')
 	  .each(function(idx, el) {
 		var currentTitle = $(el).attr('title');
-		console.log('adding screencap expand to image: ' + $(el).attr('src'));
+		//console.log('adding screencap expand to image: ' + $(el).attr('src'));
 		$(el).attr('title', '(click to enlarge)');
 		$(el).on('click', function(e) {
 		    e.preventDefault();
 		    $(this).toggleClass('screencap-expanded');
 		});
-	    });
+	  });
 
+
+        $('.svg-highlight').each((idx, el) => attachSvg(el));
       })    
   })
     

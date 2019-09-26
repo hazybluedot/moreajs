@@ -9,7 +9,7 @@ const markdownContainers = [
     render: function (tokens, idx) {
       var m = tokens[idx].info.trim().match(/^section\s+(.*)$/)
       if (tokens[idx].nesting === 1) {
-        return '<section class="collapsable"><h1><button>+</button>' + m[1] + '</h1><div class="content">\n'
+        return '<section><h1>' + m[1] + '</h1><div class="content">\n'
       } else {
         return '</div>\n</section>\n'
       }
@@ -29,6 +29,7 @@ const markdownContainers = [
   },
   {
     name: 'aside',
+    marker: '~',
     validate: regexValidator(/^aside\s+(.*)$/),
     render: function (tokens, idx) {
       var m = tokens[idx].info.trim().match(/^aside\s+(.*)$/)
@@ -62,7 +63,6 @@ md.use(require('markdown-it-anchor'))
   .use(require('markdown-it-katex'), { throwOnError: false, errorColor: '#cc0000' })
 
 markdownContainers.reduce(function (acc, current) {
-  console.log('processing container config', current)
   md.use(mc, current.name, current)
   return md
 }, md)
