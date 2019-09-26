@@ -2,12 +2,13 @@
     "name": "morea-react",
     "scripts": {
         "deploy": "npm run build && scp public/bundle.min.js efcms:~/js/moreajs.min.js",
-        "build": "browserify app/main.js -r ./deploy.js:config -t [ babelify ] | uglifyjs > public/bundle.min.js",
-        "watch": "watchify app/main.js -r ./local.js:config -o public/bundle.js --debug --verbose -t [ babelify ]",
+        "build": "browserify app/main.js -r ./deploy.js:config -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs > public/bundle.min.js",
+        "watch": "watchify app/main.js -r ./local.js:config -o public/bundle.js --debug --verbose -t [ babelify --presets [ @babel/preset-env ] ]",
         "lint": "eslint --fix app/*.js"
     },
     "author": "Darren K Maczka <dkm@utk.ed>",
     "license": "GPL-3.0",
+    "browserslist": "> 0.25%, not dead",
     "repository": {
         "type": "git",
         "url": "git://github.com/hazybluedot/numeric_calc_viz.git"
@@ -16,7 +17,6 @@
         "katex": "^0.11.1",
         "markdown-it": "^10.0.0",
         "markdown-it-anchor": "^5.2.4",
-        "markdown-it-attrs": "^3.0.1",
         "markdown-it-container": "^2.0.0",
         "markdown-it-decorate": "^1.2.2",
         "markdown-it-deflist": "^2.0.3",
@@ -24,7 +24,8 @@
         "markdown-it-katex": "^2.0.3",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
-        "slugger": "^1.0.1"
+        "slugger": "^1.0.1",
+        "svg_highlight": "file:../svg_highlight"
     },
     "devDependencies": {
         "@babel/core": "^7.6.0",
