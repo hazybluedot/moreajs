@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import MoreaItem from "./MoreaItem.js";
 import mdrender from "../markdown-it-render.js"
+import slugger from "slugger";
 
 module.exports = class Module extends Component {
   constructor(props) {
@@ -15,9 +16,10 @@ module.exports = class Module extends Component {
   }
   
   renderUnrolled(props, content, children) {
-    return (
+      const slug = "module-" + slugger(props.module.title);
+      return (
       <div className="module-content">
-	<section className="morea-module">
+	    <section className="morea-module" id={slug}>
 	<h1>{props.module.title}</h1>
         <div className="content">
 	{ content ? <div className="module-content" dangerouslySetInnerHTML={{__html:content}} /> : null }
