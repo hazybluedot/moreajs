@@ -31,6 +31,7 @@ function collapseAll() {
 }
 
 jQuery(function () {
+  jQuery.fn.comments = require('./jquery-comments.js');
   $('.markdownit').each((idx, el) => {
     mdrender.renderElement(idx, el);
     $(el).find('.collapsable').children('h1', 'h2', 'h3').first()
@@ -57,7 +58,7 @@ jQuery(function () {
             .on("click", sectionToggleHandler)
             .prepend($('<button>+</button>'))
         })
-        
+	  	  
         collapseAll();
 
         $('img').each((idx, el) => {
@@ -80,5 +81,32 @@ jQuery(function () {
 
       })    
   })
+    
+    $("#open-guide").click(function (e) {
+        //guideEl = $("#facilitator-guide");
+	//this.href;
+	$('section.morea-module').each((idx, el) => {
+	    let comments = $(el).comments(true); //recursivelyFindComments(el, []);
+	    let notes = comments.filter((index, el) => {
+		return el.innerHTML.match(/\s*NOTE:/);
+	    });
+	    if (notes.length > 0) {
+		console.log('notes', notes.toArray().map((el) => ({ rel: el.getAttribute('rel'), note: el.innerHTML })));
+	    }
+	});
+
+	console.log('clicked open guide');
+	var href = e.target.getAttribute("href");
+	console.log(href);
+        var win = window.open(window.location.origin + href
+			      , 'Facilitator Guide'
+			      , "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=980,height=680,top="+(screen.height-480)+",left="+(screen.width-840));
+	win.setNotes({ "data": [1,2,3,4]});
+	win.data = { "data": [1,2,3,4,5] };
+	win.morea = $('div.morea');
+	win.window.morea = $('div.morea');
+	win.focus();
+	
+    }); //#open-guide.click
 
 })
