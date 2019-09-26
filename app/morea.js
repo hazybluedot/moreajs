@@ -40,14 +40,13 @@ module.exports = class Morea {
   constructor (params) {
     this.apibase = params.apibase
     var self = this
-    console.log('morea object with apibase ' + this.apibase)
+    //console.log('morea object with apibase ' + this.apibase)
   }
 
   data (el) {
     const container = $(el)
     const apibase = this.apibase
 
-    console.log('gather data for', container, 'idx', 'this', this, 'apibase', apibase)
     const module_ids = container.attr('data-modules').split(/\s+/)
     let args = []
 
@@ -78,7 +77,7 @@ module.exports = class Morea {
         // return text;
       })
 
-    console.log('morea data', data, 'resolved', resolved)
+    //console.log('morea data', data, 'resolved', resolved)
     return { promise: resolved, data: data, args }
   }
 
