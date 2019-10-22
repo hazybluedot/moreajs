@@ -1,5 +1,18 @@
-const MarkdownIt = require('markdown-it')
-const md = new MarkdownIt()
+/*
+const md = require('markdown-it')({
+    highlight: function(str, lang) {
+      console.log('passing to highlight.js with lang', lang);
+      if (lang && hljs.getLanguage(lang)) {
+        console.log('doing the highlight');
+        try {
+          return hljs.highlight(lang, str).value;
+        } catch(__) {}
+      }
+      return '';
+    }
+    })*/
+
+const md = require('markdown-it')()
 const mc = require('markdown-it-container')
 
 const markdownContainers = [
@@ -55,12 +68,13 @@ const markdownContainers = [
   }
 ]
 
-md.configure('default').set({ html: true, xhtmlOut: true })
+md.configure('default').set({ html: true, xhtmlOut: true, langPrefix: '' })
 
 md.use(require('markdown-it-anchor'))
   .use(require('markdown-it-decorate'))
   .use(require('markdown-it-deflist'))
   .use(require('markdown-it-katex'), { throwOnError: false, errorColor: '#cc0000' })
+//  .use(require('markdown-it-highlightjs'))
 
 markdownContainers.reduce(function (acc, current) {
   md.use(mc, current.name, current)

@@ -56,19 +56,24 @@ module.exports = class Morea {
 
     const modules = module_ids.map((module_id) => {
       const url = apibase + '/modules/' + module_id
-      return fetch(url).then(resp => resp.json())
-    })
+      return fetch(url).then(resp => resp.json(), reason => reason);
+    });
 
     const data = {}
 
     const resolved = Promise.all(modules)
       .then(text => {
         const modules = text.map(module_items => {
-          const module = module_items.filter(item => item.morea_type == 'module')[0]
-          module.items = module_items.filter(item => item.morea_type != 'module')
-          return module
-        })
-
+          if (Array.isArray(module_items)) {
+            const module = module_items.filter(item => item.morea_type == 'module')[0]
+            module.items = module_items.filter(item => item.morea_type != 'module')
+            return module
+          } else {
+            console.log('module items not an array', module_items);
+            return null;
+          }
+        }).filter((obj) => obj !== null);
+        
         // console.log('promis all modules', modules);
         data.modules = modules
         return modules
@@ -76,8 +81,6 @@ module.exports = class Morea {
         // render_morea(modules, $(el));
         // return text;
       })
-
-    //console.log('morea data', data, 'resolved', resolved)
     return { promise: resolved, data: data, args }
   }
 

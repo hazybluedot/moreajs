@@ -2,6 +2,7 @@
     "name": "morea-react",
     "scripts": {
         "deploy": "npm run build && scp public/bundle.min.js efcms:~/js/moreajs.min.js",
+        "test": "browserify app/main.js -r ./deploy.js:config -o public/bundle.js --debug --verbose -t [ babelify --presets [ @babel/preset-env ] ] && scp public/bundle.js efcms:~/js/moreajs.test.js",
         "build": "browserify app/main.js -r ./deploy.js:config -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs > public/bundle.min.js",
         "watch": "watchify app/main.js -r ./local.js:config -o public/bundle.js --debug --verbose -t [ babelify --presets [ @babel/preset-env ] ]",
         "lint": "eslint --fix app/*.js"
@@ -14,6 +15,7 @@
         "url": "git://github.com/hazybluedot/numeric_calc_viz.git"
     },
     "dependencies": {
+        "highlightjs": "^9.12.0",
         "katex": "^0.11.1",
         "markdown-it": "^10.0.0",
         "markdown-it-anchor": "^5.2.4",
@@ -21,9 +23,12 @@
         "markdown-it-decorate": "^1.2.2",
         "markdown-it-deflist": "^2.0.3",
         "markdown-it-footnote": "^3.0.2",
+        "markdown-it-highlight": "^0.2.0",
+        "markdown-it-highlightjs": "^3.0.0",
         "markdown-it-katex": "^2.0.3",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
+        "react-markdown": "^4.2.2",
         "slugger": "^1.0.1",
         "svg_highlight": "file:../svg_highlight"
     },

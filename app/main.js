@@ -5,6 +5,8 @@ const mdrender = require('./markdown-it-render.js')
 // morea_render = new Morea({ apibase: 'https://efcms.engr.utk.edu/ef105-2019-08/api/morea' });
 const morea_render = new Morea(config)
 const MoreaReact = require('./morea-react.js')
+const tabify = require('./tab-content');
+const html5video = require('./html5video');
 
 if (typeof String.prototype.endsWith !== 'function') {
   String.prototype.endsWith = function (suffix) {
@@ -34,10 +36,12 @@ jQuery(function () {
   jQuery.fn.comments = require('./jquery-comments.js');
   $('.markdownit').each((idx, el) => {
     mdrender.renderElement(idx, el);
-    $(el).children('section')
-      .addClass('collapsable').children('h1', 'h2', 'h3').first()
+    $(el).children('section').each(function(idx, sec) {
+      console.log('each sec', sec);
+      $(sec).addClass('collapsable').children('h1', 'h2', 'h3').first()
       .on("click", sectionToggleHandler)
-      .prepend($('<button>+</button>'))
+        .prepend($('<button>+</button>'));
+    })
   })
 
   let data = $.map($('.morea'), (el) => {
@@ -48,7 +52,9 @@ jQuery(function () {
   
   data.forEach((instance) => {
     instance.promise
-      .then((e) => MoreaReact(e, instance.root, instance.args))
+      .then((e) => MoreaReact(e, instance.root, instance.args), reason => {
+        console.log(reason);
+      })
       .then(() => {
         let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
         morea_sections.each((idx, el) => {
@@ -97,6 +103,20 @@ jQuery(function () {
 
 
         $('.svg-highlight').each((idx, el) => attachSvg(el));
+        $('.tabify').each((idx, el) => tabify(el));
+        $('.html5-video').each((idx, el) => html5video(el));
+        $('samp.env-matlab').each((idx, el) => {
+          let text = el.innerHTML.split('\n');
+          if (text[0] === '') {
+            text.shift();
+            el.innerHTML = text.map(line => {
+              if (line.substr(0,line.indexOf(' ')) == ('&gt;&gt;')) {
+                line = '<span class="prompt">&gt;&gt;</span> <kbd>' + line.substr(line.indexOf(' ')+1) + '</kbd>';
+              }
+              return line;
+            }).join('\n');
+          }
+        });
       })    
   })
     
