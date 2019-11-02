@@ -89,19 +89,19 @@ jQuery(function () {
             el.setAttribute('onclick', 'swapimage(this)')
           }
         })
-
+        
         $('img.screencap')
-	  .each(function(idx, el) {
-		var currentTitle = $(el).attr('title');
-		//console.log('adding screencap expand to image: ' + $(el).attr('src'));
-		$(el).attr('title', '(click to enlarge)');
-		$(el).on('click', function(e) {
-		    e.preventDefault();
-		    $(this).toggleClass('screencap-expanded');
-		});
-	  });
-
-
+	      .each(function(idx, el) {
+		    var currentTitle = $(el).attr('title');
+		    //console.log('adding screencap expand to image: ' + $(el).attr('src'));
+		    $(el).attr('title', '(click to enlarge)');
+		    $(el).on('click', function(e) {
+		      e.preventDefault();
+		      $(this).toggleClass('screencap-expanded');
+		    });
+	      });
+        
+        
         $('.svg-highlight').each((idx, el) => attachSvg(el));
         $('.tabify').each((idx, el) => tabify(el));
         $('.html5-video').each((idx, el) => html5video(el));
@@ -137,7 +137,7 @@ jQuery(function () {
 		return el.innerHTML.match(/\s*NOTE:/);
 	    });
 	    if (notes.length > 0) {
-		console.log('notes', notes.toArray().map((el) => ({ rel: el.getAttribute('rel'), note: el.innerHTML })));
+		  console.log('notes', notes.toArray().map((el) => ({ rel: el.getAttribute('rel'), note: el.innerHTML })));
 	    }
 	});
 
