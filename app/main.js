@@ -117,9 +117,17 @@ jQuery(function () {
             }).join('\n');
           }
         });
-      })    
+      })
+      .then(() => {
+        console.log('doing final load stuff');
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = '/ef105-2019-08/includes/numeric_explorer.min.js';
+        document.head.appendChild(script);
+
+      });
   })
-    
+  
     $("#open-guide").click(function (e) {
         //guideEl = $("#facilitator-guide");
 	//this.href;
