@@ -2,11 +2,24 @@ const config = require('config')
 
 const Morea = require('./morea.js')
 const mdrender = require('./markdown-it-render.js')
-// morea_render = new Morea({ apibase: 'https://efcms.engr.utk.edu/ef105-2019-08/api/morea' });
 const morea_render = new Morea(config)
 const MoreaReact = require('./morea-react.js')
-const tabify = require('./tab-content');
 const html5video = require('./html5video');
+const asideAddon = require('./aside-addon.js');
+const screenCap = require('./screencap-addon.js');
+const imgSwap = require('./imgswap-addon.js');
+const sampOutput = require('./samp-addon.js');
+const exampleCode = require('./example-addon.js');
+
+const sectionAddOns = {
+  'img': imgSwap,
+  'img.screencap': screenCap,
+  '.section': asideAddon,
+  '.svg-highlight': (idx, el) => attachSvg(el),
+  '.html5-video': (idx, el) => html5video(el),
+  'samp.env-matlab': sampOutput,
+  '.matlab-example': exampleCode
+};
 
 if (typeof String.prototype.endsWith !== 'function') {
   String.prototype.endsWith = function (suffix) {
@@ -37,11 +50,13 @@ jQuery(function () {
   $('.markdownit').each((idx, el) => {
     mdrender.renderElement(idx, el);
     $(el).children('section').each(function(idx, sec) {
-      console.log('each sec', sec);
       $(sec).addClass('collapsable').children('h1', 'h2', 'h3').first()
       .on("click", sectionToggleHandler)
         .prepend($('<button>+</button>'));
     })
+    
+    $(el).find('.html5-video').each((idx, el) => html5video(el));
+
   })
 
   let data = $.map($('.morea'), (el) => {
@@ -66,65 +81,25 @@ jQuery(function () {
             .prepend($('<button>+</button>'))
         })
 	  	  
+        console.log('Processing section addons');
+        for (const [selector, func] of Object.entries(sectionAddOns)) {
+          console.log('selector', selector);
+          $(selector).each(func);
+        }
+
         collapseAll();
 
-        $('section').each((idx, el) => {
-          let $sec = $(el);
-          if ($sec.children('section').length == 0) {
-            $sec.addClass("row");            
-            let content = $sec.children('.content').first();
-            let asides = content.children('aside');
-            if (asides.length > 0) {
-              let main = content.children(':not(aside)');
-              
-              main.wrapAll($('<div />', {"class": "col-md-8"}));
-              asides.wrapAll($('<div />', {"class": "col-md-4"}));
-            }
-          }
-        });
-
-        $('img').each((idx, el) => {
-          const src = el.getAttribute('src').split('\.')
-          if (src[0].endsWith('-alt')) {
-            el.setAttribute('onclick', 'swapimage(this)')
-          }
-        })
-        
-        $('img.screencap')
-	      .each(function(idx, el) {
-		    var currentTitle = $(el).attr('title');
-		    //console.log('adding screencap expand to image: ' + $(el).attr('src'));
-		    $(el).attr('title', '(click to enlarge)');
-		    $(el).on('click', function(e) {
-		      e.preventDefault();
-		      $(this).toggleClass('screencap-expanded');
-		    });
-	      });
-        
-        
-        $('.svg-highlight').each((idx, el) => attachSvg(el));
-        $('.tabify').each((idx, el) => tabify(el));
-        $('.html5-video').each((idx, el) => html5video(el));
-        $('samp.env-matlab').each((idx, el) => {
-          let text = el.innerHTML.split('\n');
-          if (text[0] === '') {
-            text.shift();
-            el.innerHTML = text.map(line => {
-              if (line.substr(0,line.indexOf(' ')) == ('&gt;&gt;')) {
-                line = '<span class="prompt">&gt;&gt;</span> <kbd>' + line.substr(line.indexOf(' ')+1) + '</kbd>';
-              }
-              return line;
-            }).join('\n');
-          }
-        });
       })
       .then(() => {
         console.log('doing final load stuff');
-        let script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = '/ef105-2019-08/includes/numeric_explorer.min.js';
-        document.head.appendChild(script);
-
+        let stylelink = document.createElement('link');
+        stylelink.rel = 'stylesheet';
+        stylelink.href = 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css';
+        document.head.appendChild(stylelink);
+        //let script = document.createElement('script');
+        //script.type = 'text/javascript';
+        //script.src = '/ef105-2019-08/includes/numeric_explorer.min.js';
+        //document.head.appendChild(script);
       });
   })
   

@@ -7,7 +7,7 @@ module.exports = function(el) {
   
   const srcstub = el.getAttribute('data-file');
   const starttime = el.getAttribute('data-timeoffset');
-  console.log('timeoffset', starttime);
+  console.log('embedding html5 video', srcstub, ' with timeoffset', starttime);
   let video = document.createElement('video');
   video.setAttribute('width', 360);
   video.setAttribute('controls', true);
@@ -18,13 +18,16 @@ module.exports = function(el) {
         let source = document.createElement('source');
         source.setAttribute('src', uri);
         source.setAttribute('type', videotypes[extension]);
-        if (starttime) {
-          a = starttime.split(':');
-          let seconds = (+a[0])*60 + a[1];
-          console.log('setting currentTime to', seconds);
-          source.setAttribute('currentTime', seconds)
-        }
         video.appendChild(source);
+        if (starttime) {
+          let a = starttime.split(':');
+          let seconds = (+a[0])*60 + (+a[1]);
+          console.log('a', a, 'setting currentTime to', seconds);
+          //source.setAttribute('currentTime', seconds)
+          video.currentTime = seconds;
+        }
+      } else {
+        console.log('resource not found', response);
       }
     }, reason => {
       console.log('could not fetch', uri, reason);
