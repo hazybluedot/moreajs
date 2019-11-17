@@ -83,7 +83,6 @@ jQuery(function () {
 	  	  
         console.log('Processing section addons');
         for (const [selector, func] of Object.entries(sectionAddOns)) {
-          console.log('selector', selector);
           $(selector).each(func);
         }
 
