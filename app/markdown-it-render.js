@@ -89,19 +89,29 @@ function regexValidator (regex) {
 
 function renderString (rawContent) {
   var lines = rawContent.split('\n')
-  var whitespace = null
+  var whitespace = null;
+  var content = null;
   var i = 0
-  while (!whitespace && i < lines.length) {
-    whitespace = lines[i].match(/^(\s+)[^\s]/)
+  while (content === null && i < lines.length) {
+    if (lines[i].length > 0) {
+      whitespace = lines[i].match(/^(\s*)([^\s]+)/);
+      if (whitespace !== null && whitespace[2].length > 0) {
+        content = whitespace[2];
+        //console.log('found whitespace at line ', i, whitespace);
+      }
+    }
     i++
   }
   // strip off same whitespace from all lines
-  if (whitespace) {
+  if (whitespace !== null) {
     rawContent = lines.reduce(function (acc, line) {
       acc += line.replace(whitespace[1], '') + '\n'
       return acc
     }, '')
-  }
+    //console.log('stripping whitespace', whitespace, rawContent);
+  } /*else {
+    console.log('got to end of rawContent without finding whitespace', rawContent);
+  }*/
 
   return md.render(rawContent)
 }
