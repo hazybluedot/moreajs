@@ -1,18 +1,6 @@
-/*
-const md = require('markdown-it')({
-    highlight: function(str, lang) {
-      console.log('passing to highlight.js with lang', lang);
-      if (lang && hljs.getLanguage(lang)) {
-        console.log('doing the highlight');
-        try {
-          return hljs.highlight(lang, str).value;
-        } catch(__) {}
-      }
-      return '';
-    }
-    })*/
+const hljs = require('highlight.js')
+const md = require('markdown-it')();
 
-const md = require('markdown-it')()
 const mc = require('markdown-it-container')
 
 const markdownContainers = [
@@ -25,18 +13,6 @@ const markdownContainers = [
         return '<section><h1>' + m[1] + '</h1><div class="content">\n'
       } else {
         return '</div>\n</section>\n'
-      }
-    }
-  },
-  {
-    name: 'screen',
-    validate: regexValidator(/^screen\s+(.*)$/),
-    render: function (tokens, idx) {
-      var m = tokens[idx].info.trim().match(/^screen\s+(.*)$/)
-      if (tokens[idx].nesting === 1) {
-        return '<pre class="screen screen-' + m[1] + '">\n<code>\n'
-      } else {
-        return '</code>\n</pre>\n'
       }
     }
   },
@@ -68,7 +44,18 @@ const markdownContainers = [
   }
 ]
 
-md.configure('default').set({ html: true, xhtmlOut: true, langPrefix: '' })
+md.configure('default').set({ html: true,
+			      xhtmlOut: true,
+			      langPrefix: 'lang-',
+			      highlight: function(str, lang) {
+				  if (lang && hljs.getLanguage(lang)) {
+				      try {
+					  return hljs.highlight(lang, str).value;
+				      } catch (__) {}
+				  }
+				  return '';
+			      }
+			    })
 
 md.use(require('markdown-it-anchor'))
   .use(require('markdown-it-decorate'))
@@ -88,32 +75,30 @@ function regexValidator (regex) {
 }
 
 function renderString (rawContent) {
-  var lines = rawContent.split('\n')
-  var whitespace = null;
-  var content = null;
-  var i = 0
-  while (content === null && i < lines.length) {
-    if (lines[i].length > 0) {
-      whitespace = lines[i].match(/^(\s*)([^\s]+)/);
-      if (whitespace !== null && whitespace[2].length > 0) {
-        content = whitespace[2];
-        //console.log('found whitespace at line ', i, whitespace);
-      }
+    var lines = rawContent.split('\n')
+    var whitespace = null;
+    var content = null;
+    var i = 0
+    while (content === null && i < lines.length) {
+	if (lines[i].length > 0) {
+	    whitespace = lines[i].match(/^(\s*)([^\s]+)/);
+	    if (whitespace !== null && whitespace[2].length > 0) {
+		content = whitespace[2];
+		//console.log('found whitespace at line ', i, whitespace);
+	    }
+	}
+	i++
     }
-    i++
-  }
-  // strip off same whitespace from all lines
-  if (whitespace !== null) {
-    rawContent = lines.reduce(function (acc, line) {
-      acc += line.replace(whitespace[1], '') + '\n'
-      return acc
-    }, '')
-    //console.log('stripping whitespace', whitespace, rawContent);
-  } /*else {
-    console.log('got to end of rawContent without finding whitespace', rawContent);
-  }*/
-
-  return md.render(rawContent)
+    // strip off same whitespace from all lines
+    if (whitespace !== null) {
+	rawContent = lines.reduce(function (acc, line) {
+	    acc += line.replace(whitespace[1], '') + '\n'
+	    return acc
+	}, '')
+	//console.log('stripping whitespace', whitespace, rawContent);
+    }
+    
+    return md.render(rawContent)
 }
 
 module.exports = {
