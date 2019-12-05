@@ -43,10 +43,17 @@ function collapseAll() {
     $('section.collapsable > div.content').hide();
 }
 
+function postProcess(el) {
+  for (const [selector, func] of Object.entries(sectionAddOns)) {
+    $(el).find(selector).each(func);
+  }
+}
+
 jQuery(function () {
   let attachSvg = require('../lib/attachSvg.js');
   
   jQuery.fn.comments = require('./jquery-comments.js');
+
   $('.markdownit').each((idx, el) => {
     mdrender.renderElement(idx, el);
     $(el).children('section').each(function(idx, sec) {
@@ -55,8 +62,7 @@ jQuery(function () {
         .prepend($('<button>+</button>'));
     })
     
-    $(el).find('.html5-video').each((idx, el) => html5video(el));
-
+    postProcess(el);
   })
 
   let data = $.map($('.morea'), (el) => {
@@ -80,53 +86,49 @@ jQuery(function () {
             .on("click", sectionToggleHandler)
             .prepend($('<button>+</button>'))
         })
-	  	  
-        console.log('Processing section addons');
+
         for (const [selector, func] of Object.entries(sectionAddOns)) {
           $(selector).each(func);
         }
 
         collapseAll();
-
       })
       .then(() => {
-        console.log('doing final load stuff');
-        let stylelink = document.createElement('link');
-        stylelink.rel = 'stylesheet';
-        stylelink.href = 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css';
-        document.head.appendChild(stylelink);
-        //let script = document.createElement('script');
-        //script.type = 'text/javascript';
-        //script.src = '/ef105-2019-08/includes/numeric_explorer.min.js';
-        //document.head.appendChild(script);
+        //console.log('doing final load stuff');
       });
   })
-  
-    $("#open-guide").click(function (e) {
-        //guideEl = $("#facilitator-guide");
-	//this.href;
-	$('section.morea-module').each((idx, el) => {
-	    let comments = $(el).comments(true); //recursivelyFindComments(el, []);
-	    let notes = comments.filter((index, el) => {
-		return el.innerHTML.match(/\s*NOTE:/);
-	    });
-	    if (notes.length > 0) {
-		console.log('notes', notes.toArray().map((el) => ({ rel: el.getAttribute('rel'), note: el.innerHTML })));
-	    }
-	});
 
-	console.log('clicked open guide');
+  var onload = false;
+  $("#open-guide").click(function (e) {
+    let moduleIDs = [];
+    $('div.morea').each((idx, el) => {
+      let modules = el.getAttribute('data-modules').split(/\s+/);
+      moduleIDs = moduleIDs.concat(modules);
+    });
+
 	var href = e.target.getAttribute("href");
-	console.log(href);
-        var win = window.open(window.location.origin + href
-			      , 'Facilitator Guide'
-			      , "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=980,height=680,top="+(screen.height-480)+",left="+(screen.width-840));
-	win.setNotes({ "data": [1,2,3,4]});
-	win.data = { "data": [1,2,3,4,5] };
-	win.morea = $('div.morea');
-	win.window.morea = $('div.morea');
+    var win = window.open(window.location.origin + href
+			          , 'Facilitator Guide'
+			          , "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=980,height=680,top="+(screen.height-480)+",left="+(screen.width-840));
+    win.addEventListener('load', function() {
+      console.log('sending module IDs to child');
+      onload = true;
+      win.setNotes(moduleIDs);
+    }, false);
+
+    if (onload) {
+      console.log('sending module IDs to already loaded child', moduleIDs);
+      win.setNotes(moduleIDs);
+    }
+    //win.setNotes(moduleIDs);  
+	//win.setNotes(notes);
 	win.focus();
 	
-    }); //#open-guide.click
+  }); //#open-guide.click
+  
+  let stylelink = document.createElement('link');
+  stylelink.rel = 'stylesheet';
+  stylelink.href = 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css';
+  document.head.appendChild(stylelink);
 
 })
