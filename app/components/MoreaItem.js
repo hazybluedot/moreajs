@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import mdrender from "../markdown-it-render.js"
 import slugger from "slugger";
+import ErrorBoundary from "./ErrorBoundary.js"
 
 module.exports = class MoreaItem extends Component {
     render() {
@@ -10,8 +11,10 @@ module.exports = class MoreaItem extends Component {
 	return (
 	    <section className={className} id={slug}>
 	    <h1>{this.props.title}</h1>
+        <ErrorBoundary key={slug}>
 	    <div className="content" dangerouslySetInnerHTML={{__html:content}} />
-	    </section>
+        </ErrorBoundary>
+      </section>
 	);
     };
 };
