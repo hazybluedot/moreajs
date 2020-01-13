@@ -9,10 +9,10 @@ const screenCap = require('./screencap-addon.js');
 const imgSwap = require('./imgswap-addon.js');
 const sampOutput = require('./samp-addon.js');
 const exampleCode = require('./example-addon.js');
-//const ResponseQuestions = require('./rq-addon.js');
+const ResponseQuestions = require('./rq-addon.js');
 
 const morea_render = new Morea(config)
-//const response_questions = new ResponseQuestions(config);
+const response_questions = new ResponseQuestions(config);
 
 const sectionAddOns = {
   'img': imgSwap,
@@ -21,8 +21,8 @@ const sectionAddOns = {
   '.svg-highlight': (idx, el) => attachSvg(el),
   '.html5-video': (idx, el) => html5video(el),
   'samp.env-matlab': sampOutput,
-  '.matlab-example': exampleCode//,
-  //'.response-question': (idx, el) => response_questions.render(idx, el)
+  '.matlab-example': exampleCode,
+  '.response-question': (idx, el) => response_questions.render(idx, el)
 };
 
 if (typeof String.prototype.endsWith !== 'function') {
