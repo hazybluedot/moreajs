@@ -19,7 +19,7 @@ const renderContent = (content) => (
   </div>
 )*/
 
-const renderItem = (item) => (
+const renderItem = (item, options) => (
     <MoreaItem key={item.morea_id} title={item.title} item={item} />
 )
 
@@ -57,14 +57,33 @@ module.exports = class Module extends Component {
         </section>
     );
   }
+
+  renderTabContent(props, content, children) {
+    const id = props.id;
+    let className = "tab-pane fade show";
+    if (props.active) {
+      className += " active";
+    }
+    return (
+        <div key={id} className={className} id={id}>
+	    { content ? renderContent(content) : null }
+        {children}
+      </div>
+    );
+  }
   
   render() {
     let splitContent = this.props.module.content.split('<!-- :break section -->');
     let content = splitContent.map((str, idx) => mdrender.renderString(str));
-    let children = this.props.items.map((item, index) => renderItem(item));
+    let children = this.props.items.map((item, index) => renderItem(item, this.props.options));
     const renderUnrolled = this.renderUnrolled,
-          renderModule = this.renderModule;
+          renderModule = this.renderModule,
+          renderTabContent = this.renderTabContent;
 
-    return this.props.options.includes('unroll') ? renderUnrolled(this.props, content, children) : renderModule(this.props, content, children);
+    if (this.props.options.includes('tabs')) {
+      return renderTabContent(this.props, content, children);
+    } else {
+      return this.props.options.includes('unroll') ? renderUnrolled(this.props, content, children) : renderModule(this.props, content, children);
+    }
   }
 }

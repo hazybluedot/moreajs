@@ -38,7 +38,7 @@ function morea_structure (item, root) {
 
 module.exports = class Morea {
   constructor (params) {
-    this.apibase = params.apibase
+    this.apibase = params.apibase + '/morea'
     var self = this
     //console.log('morea object with apibase ' + this.apibase)
   }
@@ -91,7 +91,7 @@ module.exports = class Morea {
     console.log('render', container, 'idx', idx, 'this', this, 'apibase', apibase)
     const module_ids = container.attr('data-modules').split(/\s+/)
     var args = []
-
+ 
     if (container.attr('data-args')) {
       args = container.attr('data-args').split(/\s+/)
     }

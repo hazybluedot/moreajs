@@ -2,7 +2,6 @@ const config = require('config')
 
 const Morea = require('./morea.js')
 const mdrender = require('./markdown-it-render.js')
-const morea_render = new Morea(config)
 const MoreaReact = require('./morea-react.js')
 const html5video = require('./html5video');
 const asideAddon = require('./aside-addon.js');
@@ -10,6 +9,10 @@ const screenCap = require('./screencap-addon.js');
 const imgSwap = require('./imgswap-addon.js');
 const sampOutput = require('./samp-addon.js');
 const exampleCode = require('./example-addon.js');
+//const ResponseQuestions = require('./rq-addon.js');
+
+const morea_render = new Morea(config)
+//const response_questions = new ResponseQuestions(config);
 
 const sectionAddOns = {
   'img': imgSwap,
@@ -18,7 +21,8 @@ const sectionAddOns = {
   '.svg-highlight': (idx, el) => attachSvg(el),
   '.html5-video': (idx, el) => html5video(el),
   'samp.env-matlab': sampOutput,
-  '.matlab-example': exampleCode
+  '.matlab-example': exampleCode//,
+  //'.response-question': (idx, el) => response_questions.render(idx, el)
 };
 
 if (typeof String.prototype.endsWith !== 'function') {
@@ -54,7 +58,9 @@ jQuery(function () {
   
   jQuery.fn.comments = require('./jquery-comments.js');
 
+  let markdownblocks = false;
   $('.markdownit').each((idx, el) => {
+    markdownblocks = true;
     mdrender.renderElement(idx, el);
     $(el).children('section').each(function(idx, sec) {
       $(sec).addClass('collapsable').children('h1', 'h2', 'h3').first()
@@ -64,6 +70,12 @@ jQuery(function () {
     
     postProcess(el);
   })
+
+  if (!markdownblocks) {
+    $('#gbocontent').each((idx, el) => {
+      mdrender.renderElement(idx, el);
+    });
+  }
 
   let data = $.map($('.morea'), (el) => {
     data = morea_render.data(el)
@@ -78,6 +90,7 @@ jQuery(function () {
       })
       .then(() => {
         let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
+        /*
         morea_sections.each((idx, el) => {
           const $section = $(el)
           //console.log('appending button to ', el);
@@ -85,19 +98,44 @@ jQuery(function () {
             .first()
             .on("click", sectionToggleHandler)
             .prepend($('<button>+</button>'))
-        })
+        })*/
 
         for (const [selector, func] of Object.entries(sectionAddOns)) {
           $(selector).each(func);
         }
 
-        collapseAll();
+
+        $('h1[data-toggle="tab"]').on('show.bs.tab', (e) => {
+          console.log('pushing hash to history', e.target);
+          history.pushState({}, '', '#' + e.target.id);
+        });
+
+        //collapseAll();
       })
       .then(() => {
         //console.log('doing final load stuff');
+        var hash = document.location.hash;
+        var postfix = "-tab";
+        console.log('got document hash', hash);
+        if (hash) {
+          $('.nav-tabs h1[href="'+hash.replace(postfix,"")+'"]').tab('show');
+        }
+
+        $('[data-toggle="collapse"][data-group][data-default]').each((idx, e) => {
+          console.log('data-default', e);
+          const target = e.getAttribute('data-target');
+          console.log('data-default', target);
+          $(target).addClass("show");
+        });
+        
+        $('[data-toggle="collapse"][data-group]').on('click', (e) => {
+          console.log('toggleing data-group', e.target.getAttribute('data-group'));
+          const group = e.target.getAttribute('data-group');
+          $(group).removeClass("show");
+        });
       });
   })
-
+  
   var onload = false;
   $("#open-guide").click(function (e) {
     let moduleIDs = [];
@@ -125,10 +163,9 @@ jQuery(function () {
 	win.focus();
 	
   }); //#open-guide.click
-  
+    
   let stylelink = document.createElement('link');
   stylelink.rel = 'stylesheet';
   stylelink.href = 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css';
   document.head.appendChild(stylelink);
-
 })
