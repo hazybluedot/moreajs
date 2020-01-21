@@ -64,7 +64,8 @@ export class MoreaModule extends Component {
           options = this.props.options;
     let splitContent = this.props.module.content.split('<!-- :break section -->');
     let content = splitContent.map((str, idx) => efmd.render(str));
-    let children = this.props.items.map((item, index) => renderItem(item, options));
+      let children = this.props.items
+	  .map((item, index) => renderItem(item, options));
 
     return options.includes('unroll') ? renderUnrolled(this.props, content, children) : renderModule(this.props, content, children);
   }

@@ -6,7 +6,7 @@ const config = require('../deploy.js');
 import Morea from './morea.js';
 import MoreaReact from './morea-react.js';
 const html5video = require('./html5video');
-const asideAddon = require('./aside-addon.js');
+import asideAddon from './aside-addon.js';
 const screenCap = require('./screencap-addon.js');
 const imgSwap = require('./imgswap-addon.js');
 const sampOutput = require('./samp-addon.js');
@@ -22,7 +22,7 @@ const response_questions = new ResponseQuestions(config);
 const sectionAddOns = {
   'img': imgSwap,
   'img.screencap': screenCap,
-  '.section': asideAddon,
+  'section': asideAddon,
   '.svg-highlight': (idx, el) => attachSvg(el),
   '.html5-video': (idx, el) => html5video(el),
   'samp.env-matlab': sampOutput,
@@ -79,7 +79,7 @@ jQuery(function () {
         console.log(reason);
       })
       .then(() => {
-        let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
+//        let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
 
         for (const [selector, func] of Object.entries(sectionAddOns)) {
           $(selector).each(func);
