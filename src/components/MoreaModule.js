@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import MoreaItem from "./MoreaItem.js";
+import SourceComment from "./SourceComment.js"
+
 import efmd from 'efmarkdown';
 import slugger from "slugger";
 import {Tabs, Tab} from 'react-bootstrap';
@@ -50,10 +52,11 @@ export class MoreaModule extends Component {
   renderModule(props, content, children) {
     return (
         <section className="morea-module">
+        <SourceComment text={props.module._source} />
 	    {!props.options.includes('notitle') && <h1>{props.module.title}</h1>}
 	    { content ? renderContent(content) : null }
         {props.options.includes('module-tabs') && props.items ? renderTabs(props.items) : children} 
-        </section>
+      </section>
     );
   }
   
