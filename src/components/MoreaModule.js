@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from 'react-dom';
 import MoreaItem from "./MoreaItem.js";
 import SourceComment from "./SourceComment.js"
 
@@ -33,7 +34,14 @@ export class MoreaModule extends Component {
       items: props.items
     };
   }
-    
+
+  componentDidUpdate(prevProps) {
+    let el = ReactDOM.findDOMNode(this);
+    if (typeof(this.props.postProcess) !== "undefined") {
+      this.props.postProcess(el);
+    }
+  }
+  
   renderUnrolled(props, content, children) {
       const slug = "module-" + slugger(props.module.title);
       return (
@@ -59,7 +67,7 @@ export class MoreaModule extends Component {
       </section>
     );
   }
-  
+
   render() {
     const renderUnrolled = this.renderUnrolled,
           renderModule = this.renderModule,

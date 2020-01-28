@@ -75,7 +75,7 @@ jQuery(function () {
   
   data.forEach((instance) => {
     instance.promise
-      .then((e) => MoreaReact(e, instance.root, instance.args, document.location), reason => {
+      .then((e) => MoreaReact(e, instance.root, instance.args, document.location, postProcess), reason => {
         console.log(reason);
       })
       .then(() => {

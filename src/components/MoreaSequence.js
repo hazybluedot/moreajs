@@ -3,7 +3,7 @@ import MoreaModule from "./MoreaModule.js"
 import ErrorBoundary from "./ErrorBoundary.js"
 import {Tabs, Tab} from 'react-bootstrap';
 
-function renderModule(module, idx, options) {    
+function renderModule(module, idx, options, postProcess) {    
     let ordered_ids = ['outcomes', 'readings', 'experiences', 'assessments'].reduce((ids, type) => {
       let key = 'morea_' + type
       if (key in module ) {
@@ -19,11 +19,11 @@ function renderModule(module, idx, options) {
     
     const active = idx == 0 ? true : false;
     return (<ErrorBoundary key={module.morea_id}>
-	        <MoreaModule key={module.morea_id} id={module.morea_id} module={module} items={items} active={active} options={options} />
+	        <MoreaModule key={module.morea_id} id={module.morea_id} module={module} items={items} active={active} options={options} postProcess={postProcess} />
 	    </ErrorBoundary>);
 }
 
-const MoreaSequence = ({modules, options, location}) => {
+const MoreaSequence = ({modules, options, location, postProcess}) => {
   const state = location.hash ? location.hash.replace("#", "") : modules[0].morea_id;
   const [key, setKey] = useState(state);
 
@@ -33,12 +33,15 @@ const MoreaSequence = ({modules, options, location}) => {
           history.pushState({}, '', '#' + key);
           setKey(key);
         }} activeKey={key}>
-        {modules.map((module,idx) => <Tab key={module.morea_id} eventKey={module.morea_id} title={module.title}>{renderModule(module, idx, ['notitle'])}</Tab>)}
+        {modules.map((module,idx) => <Tab key={module.morea_id}
+                     eventKey={module.morea_id}
+                     title={module.title}>{renderModule(module, idx, ['notitle'], postProcess)}</Tab>
+                    )}
       </Tabs>
     );
   } else {
       return(
-        modules.map(module => renderModule(module, 0, options))
+        modules.map(module => renderModule(module, 0, options, postProcess))
       );
   }
 };
