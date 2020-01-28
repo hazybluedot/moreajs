@@ -36,18 +36,6 @@ if (typeof String.prototype.endsWith !== 'function') {
     }
 }
 
-function sectionToggleHandler(el) {
-    var sec = $(el.currentTarget).parent();
-    //let module_content = sec.children('.module-content');
-    //sec = module_content.length > 0 ? module_content.first() : sec;
-    sec.children('.content').toggle();
-    if (sec.children('.content').css('display') == 'none') {
-	sec.find('h2 button, h1 button').text('+');
-    } else {
-	sec.find('h2 button, h1 button').text('-');	
-    }
-};
-
 function postProcess(el) {
   for (const [selector, func] of Object.entries(sectionAddOns)) {
     $(el).find(selector).each(func);
