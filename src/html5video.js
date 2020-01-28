@@ -7,7 +7,7 @@ module.exports = function(el) {
   
   const srcstub = el.getAttribute('data-file');
   const starttime = el.getAttribute('data-timeoffset');
-  console.log('embedding html5 video', srcstub, ' with timeoffset', starttime);
+  //console.log('embedding html5 video', srcstub, ' with timeoffset', starttime);
   let video = document.createElement('video');
   video.setAttribute('width', 360);
   video.setAttribute('controls', true);
