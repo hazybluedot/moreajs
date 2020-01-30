@@ -39,12 +39,6 @@ jQuery(function () {
         console.log(reason);
       })
       .then(() => {
-        /*
-        for (const [selector, func] of Object.entries(sectionAddOns)) {
-          $(selector).each(func);
-        }*/
-      })
-      .then(() => {
         $('[data-toggle="collapse"][data-group][data-default]').each((idx, e) => {
           console.log('data-default', e);
           const target = e.getAttribute('data-target');
@@ -87,9 +81,4 @@ jQuery(function () {
 	win.focus();
 	
   }); //#open-guide.click
-    
-  let stylelink = document.createElement('link');
-  stylelink.rel = 'stylesheet';
-  stylelink.href = 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css';
-  document.head.appendChild(stylelink);
 })
