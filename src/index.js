@@ -1,45 +1,17 @@
 //import $ from 'jquery';
 
-import efmd from 'efmarkdown';
+import efmd, {splitRender} from 'efmarkdown';
 const config = require('../deploy.js');
 
 import Morea from './morea.js';
 import MoreaReact from './morea-react.js';
-const html5video = require('./html5video');
-import asideAddon from './aside-addon.js';
-const screenCap = require('./screencap-addon.js');
-const imgSwap = require('./imgswap-addon.js');
-const sampOutput = require('./samp-addon.js');
-import exampleCode from './example-addon.js';
-const ResponseQuestions = require('./rq-addon.js');
-const attachSvg = require('../lib/attachSvg.js');
-
-console.log('exampleCode', exampleCode);
 
 const morea_render = new Morea(config)
-const response_questions = new ResponseQuestions(config);
-
-const sectionAddOns = {
-  'img': imgSwap,
-  'img.screencap': screenCap,
-  'section': asideAddon,
-  '.svg-highlight': (idx, el) => attachSvg(el),
-  '.html5-video': (idx, el) => html5video(el),
-  'samp.env-matlab': sampOutput,
-  '.matlab-example': exampleCode,
-  '.response-question': (idx, el) => response_questions.render(idx, el)
-};
 
 if (typeof String.prototype.endsWith !== 'function') {
     String.prototype.endsWith = function (suffix) {
 	return this.indexOf(suffix, this.length - suffix.length) !== -1
     }
-}
-
-function postProcess(el) {
-  for (const [selector, func] of Object.entries(sectionAddOns)) {
-    $(el).find(selector).each(func);
-  }
 }
 
 jQuery(function () {
@@ -63,15 +35,14 @@ jQuery(function () {
   
   data.forEach((instance) => {
     instance.promise
-      .then((e) => MoreaReact(e, instance.root, instance.args, document.location, postProcess), reason => {
+      .then((e) => MoreaReact(e, instance.root, instance.args, document.location), reason => {
         console.log(reason);
       })
       .then(() => {
-//        let morea_sections = $('section.morea-module, section.morea-reading, section.morea-assessment, section.morea-experience');
-
+        /*
         for (const [selector, func] of Object.entries(sectionAddOns)) {
           $(selector).each(func);
-        }
+        }*/
       })
       .then(() => {
         $('[data-toggle="collapse"][data-group][data-default]').each((idx, e) => {

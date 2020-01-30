@@ -19,11 +19,11 @@ function renderModule(module, idx, options, postProcess) {
     
     const active = idx == 0 ? true : false;
     return (<ErrorBoundary key={module.morea_id}>
-	        <MoreaModule key={module.morea_id} id={module.morea_id} module={module} items={items} active={active} options={options} postProcess={postProcess} />
+	        <MoreaModule key={module.morea_id} id={module.morea_id} module={module} items={items} active={active} options={options} />
 	    </ErrorBoundary>);
 }
 
-const MoreaSequence = ({modules, options, location, postProcess}) => {
+const MoreaSequence = ({modules, options, location}) => {
   const state = location.hash ? location.hash.replace("#", "") : modules[0].morea_id;
   const [key, setKey] = useState(state);
 
@@ -35,13 +35,13 @@ const MoreaSequence = ({modules, options, location, postProcess}) => {
         }} activeKey={key}>
         {modules.map((module,idx) => <Tab key={module.morea_id}
                      eventKey={module.morea_id}
-                     title={module.title}>{renderModule(module, idx, ['notitle'], postProcess)}</Tab>
+                     title={module.title}>{renderModule(module, idx, ['notitle'])}</Tab>
                     )}
       </Tabs>
     );
   } else {
       return(
-        modules.map(module => renderModule(module, 0, options, postProcess))
+        modules.map(module => renderModule(module, 0, options))
       );
   }
 };

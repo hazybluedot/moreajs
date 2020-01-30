@@ -7,9 +7,9 @@ function rangleAside($sec) {
 	let main = content.children(':not(aside)');
 	
     //console.log('wrapping main', main);
-	main.wrapAll($('<div />', {"class": "col-md-6"}));
+	main.wrapAll($('<div />', {"class": "col-md-8"}));
     //console.log('wrapping asides', asides);
-    asides.wrapAll($('<div />', {"class": "col-md-3"}));
+    asides.wrapAll($('<div />', {"class": "col-md-4"}));
   }
 }
 

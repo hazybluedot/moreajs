@@ -1,8 +1,9 @@
 module.exports = (idx, el) => {
-  var currentTitle = $(el).attr('title');
-  //console.log('adding screencap expand to image: ' + $(el).attr('src'));
-  $(el).attr('title', '(click to enlarge)');
-  $(el).on('click', function(e) {
+  let $img = $(el).children('img').length > 0 ? $(el).children('img').first() : $(el);
+  var currentTitle = $img.attr('title');
+  $img.addClass('screencap');
+  $img.attr('title', '(click to enlarge)');
+  $img.on('click', function(e) {
 	e.preventDefault();
 	$(this).toggleClass('screencap-expanded');
   });

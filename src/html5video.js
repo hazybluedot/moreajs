@@ -33,5 +33,6 @@ module.exports = function(el) {
       console.log('could not fetch', uri, reason);
     });
   });
+  el.innerHTML = '';
   el.appendChild(video);
 };
