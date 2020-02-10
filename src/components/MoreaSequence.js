@@ -26,8 +26,8 @@ function renderModule(module, idx, options, postProcess) {
 const MoreaSequence = ({modules, options, location}) => {
   const state = location.hash ? location.hash.replace("#", "") : modules[0].morea_id;
   const [key, setKey] = useState(state);
-
-  if (options.includes('tabs') && !options.includes('unroll')) {
+  
+  if (options.includes('tabs')) {
     return (
         <Tabs onSelect={key => {
           history.pushState({}, '', '#' + key);
