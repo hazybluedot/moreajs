@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import efmd, {splitRender} from 'efmarkdown';
+import efmd, {splitRender, render} from 'efmarkdown';
 import postProcess from '../postProcess.js';
 
 class MarkdownContent extends React.Component {
   componentDidMount() {
-    this.el.innerHTML = splitRender(this.el.innerHTML);
+    this.el.innerHTML = splitRender(this.props.content);
     //console.log('postProcess', postProcess, el);
 
     //this.handleChange = this.handleChange.bind(this);
@@ -13,17 +13,18 @@ class MarkdownContent extends React.Component {
 
   }
 
+  /*
   componentWillUnmount() {
     //this.el.removeEventListener('change', this.handleChange);
   }
-
+  */
   /*
   handleChange(e) {
   }*/
   
   render() {
     return (
-        <div className="module-content efmarkdown" ref={el => this.el = el} dangerouslySetInnerHTML={{__html:this.props.content}} />
+        <div className="module-content efmarkdown" ref={el => this.el = el} />
     );
   }
 }
