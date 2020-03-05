@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import efmd, {splitRender} from 'efmarkdown';
+import efmd, {splitRender, render} from 'efmarkdown';
 import postProcess from '../postProcess.js';
 
 class MarkdownContent extends React.Component {
@@ -13,10 +13,11 @@ class MarkdownContent extends React.Component {
 
   }
 
+  /*
   componentWillUnmount() {
     //this.el.removeEventListener('change', this.handleChange);
   }
-
+  */
   /*
   handleChange(e) {
   }*/
