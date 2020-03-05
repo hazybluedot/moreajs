@@ -4,7 +4,7 @@ import postProcess from '../postProcess.js';
 
 class MarkdownContent extends React.Component {
   componentDidMount() {
-    this.el.innerHTML = splitRender(this.el.innerHTML);
+    this.el.innerHTML = splitRender(this.props.content);
     //console.log('postProcess', postProcess, el);
 
     //this.handleChange = this.handleChange.bind(this);
@@ -23,7 +23,7 @@ class MarkdownContent extends React.Component {
   
   render() {
     return (
-        <div className="module-content efmarkdown" ref={el => this.el = el} dangerouslySetInnerHTML={{__html:this.props.content}} />
+        <div className="module-content efmarkdown" ref={el => this.el = el} />
     );
   }
 }
