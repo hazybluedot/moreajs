@@ -1,10 +1,10 @@
 {
   "name": "morea-react",
   "scripts": {
-    "deploy": "npm run build && scp dist/moreajs.min.js efcms:~/js/moreajs.min.js",
+    "deploy": "npm run build && scp dist/moreajs.min.js* efcms:~/js/",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js --json > stats.json",
-    "test": "webpack --config webpack.dev.js && scp dist/moreajs.test.js efcms:~/js/moreajs.test.js",
+    "dev": "webpack --config webpack.dev.js && scp dist/moreajs.test.js efcms:~/js/moreajs.test.js",
     "lint": "eslint --fix app/*.js"
   },
   "author": "Darren K Maczka <dkm@utk.ed>",
