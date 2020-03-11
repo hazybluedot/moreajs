@@ -12,11 +12,14 @@ function renderModule(module, idx, options, postProcess) {
       return ids;
     }, []);
 
+    console.log('renderModule, ordered_ids', ordered_ids);
     let items = ordered_ids.map((id) => {
       let item = module.items.filter( i => i.morea_id == id );
       return (item.length > 0) ? item[0] : null;
     }).filter((i) => i !== null);
     
+    console.log('renderModule, ordered item ids', items);
+    console.log('module', module);
     const active = idx == 0 ? true : false;
     return (<ErrorBoundary key={module.morea_id}>
 	        <MoreaModule key={module.morea_id} id={module.morea_id} module={module} items={items} active={active} options={options} />
