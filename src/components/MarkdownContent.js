@@ -4,13 +4,11 @@ import postProcess from '../postProcess.js';
 
 class MarkdownContent extends React.Component {
   componentDidMount() {
-    this.el.innerHTML = splitRender(this.props.content);
-    //console.log('postProcess', postProcess, el);
-
+      this.el.innerHTML = splitRender(this.props.content);
+      
     //this.handleChange = this.handleChange.bind(this);
     //this.el.addEventListener('change', this.handleChange);
-    postProcess(this.el);
-
+      postProcess(this.el, this.props.resources, this.props.env);
   }
 
   /*
