@@ -13,9 +13,10 @@ function unroll_modules(modules) {
 }
 
 export default function ({modules, extra}, el, args, location) {
-    if (extra.env.user.priv === 'admin') {
+    /*
+    if (extra && extra.env && extra.env.user && extra.env.user.priv === 'admin') {
 	console.log('Hello from morea-react', args, 'data', modules, 'extra', extra);
-    }
+    }*/
     if (args.includes('unroll')) {
 	modules = unroll_modules(modules);
 	//console.log('unrolling modules', data);

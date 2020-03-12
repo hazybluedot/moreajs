@@ -67,8 +67,10 @@ export default class Morea {
 		      let {modules, resources, env} = bundle;
 		      acc.env = Object.assign(acc.env, env);
 		      const current_ids = acc.resources.map(res => res.id);
-		      let new_resources = resources.filter(res => !current_ids.includes(res.id));
-		      acc.resources=acc.resources.concat(new_resources);
+		      if (resources) {
+			  let new_resources = resources.filter(res => !current_ids.includes(res.id));
+			  acc.resources=acc.resources.concat(new_resources);
+		      }
 		      return acc;
 		  }, {resources: [], env: {}});
 		  const modules = text.map(bundle => {
