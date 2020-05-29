@@ -6,6 +6,10 @@ const config = require('../deploy.js');
 import Morea from './morea.js';
 import MoreaReact from './morea-react.js';
 
+import React from "react";
+import ReactDOM from 'react-dom'
+import MoreaApp from './MoreaApp.js'
+
 const morea_render = new Morea(config)
 
 if (typeof String.prototype.endsWith !== 'function') {
@@ -26,7 +30,11 @@ jQuery(function () {
       postProcess(el);
       })
     */
-    
+    $("#gbopage").each((idx, el) => {
+	console.log('rendering app', el);
+	ReactDOM.render(<MoreaApp location={document.location}/>, el);
+    });
+
     let data = $.map($('.morea'), (el) => {
 	data = morea_render.data(el)
 	data.root = el

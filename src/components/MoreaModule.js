@@ -1,11 +1,15 @@
-import React, { Component } from "react";
-import ReactDOM from 'react-dom';
+import React, { Component, useEffect } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+
 import MoreaItem from "./MoreaItem.js";
-import SourceComment from "./SourceComment.js"
-import MarkdownContent from "./MarkdownContent.js"
 
 import slugger from "slugger";
 import {Tabs, Tab} from 'react-bootstrap';
+import store from "../redux/store";
+import { fetchItems } from "../redux/actions";
+
+import MoreaItemContainer from "./MoreaItemContainer.jsx";
 
 const renderTabs = (items, resources, env) => (
 	<Tabs defaultActiveKey={items[0].morea_id} id="some-tab-example">
@@ -13,29 +17,56 @@ const renderTabs = (items, resources, env) => (
     </Tabs>
 );
 
-export class MoreaModule extends Component {  
-    render() {
-	const props = this.props,
-              renderModule = this.renderModule,
-              renderTabContent = this.renderTabContent;
-        
-	const options = props.options,
-              content = props.module.content,
-	      resources = props.resources,
-	      env = props.env;
-	
-	const children = props.items
-	      .map((item, index) => <MoreaItem key={item.morea_id} title={item.title} item={item} options={options} resources={resources} env={env} />);
-	
-	return (
-		<section className="morea-module">
-		<SourceComment text={props.module._source} />
-		{!props.options.includes('notitle') && <h1>{props.module.title}</h1>}
-	    { content ? <MarkdownContent content={content} resources={resources} env={env} /> : null }
-            {props.options.includes('module-tabs') && props.items ? renderTabs(props.items, resources, env) : children} 
-            </section>
-	);
-    }
-}
+const MoreaItemsContainer = ({items, item, children, isFetching, fetchItems}) => {
 
-export default MoreaModule;
+    useEffect(() => {
+	if (items.length == 0 && !isFetching) {
+	    fetchItems();
+	}
+      }, []);
+    
+    if  (items.length > 0 && item) {
+	return (
+	    <MoreaItemContainer {...item}>
+	      {children}
+	    </MoreaItemContainer>
+	);
+    } else {
+	return (<div>Loading Items</div>);
+    }
+};
+
+const createChildItems = (container, state) => {
+    if (container === undefined) {
+	return [];
+    }
+    const item = container.item;
+    const child_ids = ['morea_outcomes', 'morea_readings', 'morea_experiences', 'morea_assessments'].reduce((acc, cur) => {
+	const children = item[cur] ? item[cur] : []; 
+	acc = [...acc, ...children];
+	return acc;
+    }, []);
+    const children = state.items.items.filter(item => child_ids.includes(item.item.morea_id));
+    console.log(`children of ${container.item.morea_id}`, children);
+    return children.map(child => <MoreaItemContainer {...child.item}/>);
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    fetchItems: () => dispatch(fetchItems())
+});
+
+const mapStateToProps = (state, ownProps) => {
+    //console.group('MoreaModule mapStateToProps');
+    //console.info(state, ownProps);
+    let container = state.items.items.filter((item) => item.item.morea_id === ownProps.morea_id)[0];
+    //console.log('container', container);
+    //console.groupEnd();
+    return { //items: state.items.items,
+	...state.items,
+	items: state.items.items,
+	item: container ? container.item : null,
+	children: createChildItems(container, state)
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoreaItemsContainer);
