@@ -1,28 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
-import ReactMde from "react-mde";
 
 import efmd, {splitRender, render} from 'efmarkdown';
 import postProcess from '../postProcess.js';
-
-const MarkdownContentEditor = ({content}) => {
-    const [value, setValue] = useState(content);
-    const [selectedTab, setSelectedTab] = useState<"write" | "preview">("preview");
-
-    useEffect((e) => {
-	console.log('valude change', e, value);
-    }, [value]);
-    
-    return (
-	<ReactMde value={content}
-		  onChange={setValue}
-		  selectedTab={selectedTab}
-		  onTabChange={setSelectedTab}
-		  generateMarkdownPreview={markdown =>
-					   Promise.resolve(splitRender(markdown))
-					   }
-					   />
-    );
-};
 
 class MarkdownContent extends React.Component {
     componentDidMount() {

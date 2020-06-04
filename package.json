@@ -31,6 +31,7 @@
     "redux-thunk": "^2.3.0",
     "slugger": "^1.0.1",
     "svg_highlight": "file:../svg_highlight",
+    "swr": "^0.2.2",
     "throttle-debounce": "^2.1.0"
   },
   "devDependencies": {

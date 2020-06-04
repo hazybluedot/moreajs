@@ -27,8 +27,8 @@ const MoreaItemsContainer = ({items, item, children, isFetching, fetchItems}) =>
     
     if  (items.length > 0 && item) {
 	return (
-	    <MoreaItemContainer {...item}>
-	      {children}
+		<MoreaItemContainer {...item} canEdit={true}>
+		{children}
 	    </MoreaItemContainer>
 	);
     } else {
