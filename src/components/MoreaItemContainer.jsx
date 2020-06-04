@@ -38,7 +38,7 @@ const Messages = ({messages}) => {
 
 const MoreaItemContainer = ({canEdit, ...item}) => {
     const [state, setState] = useState("published");
-    const {publishedItem, publishedItemError} = useSWR(item, fetcher); // one call for both deploy and working data?
+    const {publishedItem} = useSWR(item, fetcher); // one call for both deploy and working data?
     const {workingItem, workingItemError} = useSWR({...item, working: true}, fetcher); // one call for both deploy and working data?
     const [messages, setMessages] = useState([]);
     
@@ -56,7 +56,7 @@ const MoreaItemContainer = ({canEdit, ...item}) => {
     };
     */
 
-    console.log('publishedItem', publishedItem, publishedItemError);
+    console.log('publishedItem', publishedItem);
     return (
 	<div>
 	  <Messages messages={messages} />
