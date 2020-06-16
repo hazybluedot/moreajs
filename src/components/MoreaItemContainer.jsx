@@ -1,32 +1,16 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import useSWR from "swr";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 
-import useSWR from 'swr';
-import {fetcher} from '../async';
+import {fetcher, itemFetcher, putItem} from "../async";
 
-import { fetchItems, saveItem } from "../redux/actions";
+//import { fetchItems, saveItem } from "../redux/actions";
 
 import MoreaItem from "./MoreaItem.js";
 import MoreaItemControls from "./MoreaItemControls.jsx";
-
-/*const MoreaItemContainer = ({isLoaded, isFetching, children, ...props}) => {
-
-    useEffect(() => {
-	console.log('MoreaItemContainer props', props);
-	if (!isLoaded && !isFetching) {
-	    props.fetchItem();
-	}
-    }, []);
-    
-    return (
-	<MoreaItem {...props}>
-	  {children}
-	</MoreaItem>
-    );
-};
-
-*/
+import ErrorBoundary from "./ErrorBoundary";
+import useDebounce from "../useDebounce";
 
 const Messages = ({messages}) => {
     return (
@@ -36,36 +20,59 @@ const Messages = ({messages}) => {
     );
 };
 
-const MoreaItemContainer = ({canEdit, ...item}) => {
+function MoreaItemContainer({canEdit, ...item}) {
+    console.group('MoreaItemContainer');
+    const [localItem, setItem] = useState(item);
+    const [isStable, setIsStable] = useState(true);
     const [state, setState] = useState("published");
-    const {publishedItem} = useSWR(item, fetcher); // one call for both deploy and working data?
-    const {workingItem, workingItemError} = useSWR({...item, working: true}, fetcher); // one call for both deploy and working data?
-    const [messages, setMessages] = useState([]);
+    const {data, error, isValidating, mutate} = useSWR([item.morea_type, item.morea_id, state === "published" ? "published" : "working"], itemFetcher);
+    console.log('item', item, 'state', state);
+
+    const debouncedValue = localItem && localItem.content ? useDebounce(localItem, 1000) : null;
     
-    const itemState = state === "published" ? publishedItem : workingItem;
-
-    /*
     useEffect(() => {
-	setItem(item);
-	if (item.isWorkingCopy !== null && !item.isWorkingCopy) {
-	    addMessage({key: 'working-copy', message: 'A newer draft of this item exists as a working copy', variant: 'warning'});
-	}
-    }, [item]);
-    const addMessage = (message) => {
-	setMessages([...messages.filter(m => m.key != message.key), message]);
-    };
-    */
+        setItem(data);
+    }, [data]);
 
-    console.log('publishedItem', publishedItem);
+    
+    useEffect(() => {
+	if (debouncedValue && debouncedValue !== item.content) {
+	    console.log('saving content to server', debouncedValue);
+            /*
+            putItem(debouncedValue).then(data => {
+                mutate({...data, content: debouncedValue});
+                console.log('success', data);
+                setIsStable(true);
+            });*/
+	}   
+    }, [debouncedValue]);
+    
+    const onChange = (item) => {
+        console.log('setItem', item);
+        setIsStable(false);
+        setItem(item);
+        //mutate(item);
+        //mutate(item);
+    };
+
+    console.groupEnd();
+
+    if (error) return <div>failed to load</div>;
+    
     return (
 	<div>
-	  <Messages messages={messages} />
+	  {/*<Messages messages={messages} />*/}
 	  {/*if editable, then <MoreaItemControls />*/}
-	  { canEdit && <MoreaItemControls view={state} visibility="Public" setState={setState} /> }
+          <ErrorBoundary>
+	    { canEdit && <MoreaItemControls view={state} visibility="Public" setState={setState} isLoading={!isStable} /> }
+          </ErrorBoundary>
 	  {/*if state === published then <MoreaItem with published item />*/}
 	  {/*if state === working then <MoreaItem with working item />*/}
 	  {/*if state === edit then <MoreaItemEditor with working item />*/}
-	  { publishedItem ? <MoreaItem item={publishedItem} isEditing={state === "edit" ? true : false} /> : 'loading...'}
+	  {/*<MoreaItem item={publishedItem} isEditing={state === "edit" ? true : false} />*/}
+          <ErrorBoundary>
+            { localItem ? <MoreaItem item={localItem} resources={[]} env={{}} isEditing={state === "edit"} onChange={onChange} /> : <div>loading...</div> }
+          </ErrorBoundary>
 	</div>
     );
 };

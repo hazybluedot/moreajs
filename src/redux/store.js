@@ -8,6 +8,6 @@ const store = createStore(
     rootReducer,
     applyMiddleware(loggerMiddleware, thunkMiddleware));
 
-store.dispatch(fetchItems());
+//store.dispatch(fetchItems());
 
 export default store;

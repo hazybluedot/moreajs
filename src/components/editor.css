@@ -1,0 +1,132 @@
+
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@hazybluedot
+mulesoft /
+md-draft-js
+
+6
+300
+34
+
+    4
+
+Code
+Issues 2
+Pull requests 6
+Actions
+Projects 0
+Wiki
+Security 0
+
+    Insights
+
+md-draft-js/playground/editor.css
+@nescalante nescalante fix images and add tests d07430a on May 24, 2017
+102 lines (87 sloc) 1.38 KB
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.editor {
+  max-width: 700px;
+  border: 1px solid #696;
+  margin: 30px auto;
+}
+
+.editor-buttons {
+  background-color: #696;
+  padding: 5px;
+  display: flex;
+}
+
+.editor-action {
+  padding: 8px;
+  cursor: pointer;
+  border: 0;
+  background-color: #696;
+  outline: none;
+  font-size: 16px;
+  color: #eee;
+  transition: 0.5s ease;
+  display: flex;
+  border-radius: 2px;
+}
+
+.editor-action.active {
+  background-color: #090;
+  transition: 0.2s ease;
+}
+
+.editor-action span {
+  align-items: center;
+}
+
+.editor-action:hover {
+  background-color: #080;
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.editor-action + .editor-action {
+  margin-left: 5px;
+}
+
+textarea {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  border: 0;
+  padding: 15px;
+  min-height: 400px;
+  width: 100%;
+  outline: none;
+  resize: none;
+}
+
+.heading {
+  font-family: 'Roboto', sans-serif;
+  background-color: #c64;
+  color: #eee;
+  text-align: center;
+  padding: 40px;
+  font-weight: 100;
+  margin-bottom: 30px;
+}
+
+.site {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/*
+h1 {
+  font-size: 48px;
+  font-weight: 300;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h4 {
+  font-weight: 300;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+p {
+  font-family: 'Roboto Slab', serif;
+  color: #041;
+}
+
+a {
+  color: #373;
+}*/

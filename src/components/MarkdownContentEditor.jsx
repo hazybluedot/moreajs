@@ -1,66 +1,64 @@
 import React, {useEffect, useState} from "react";
-import { debounce } from "throttle-debounce";
 
-import ReactMde from "react-mde";
-import "react-mde/lib/styles/css/react-mde-all.css";
+import { Editor, EditorState, RichUtils } from "md-draft-js";
+import "./editor.css";
 
 const MarkdownContentEditor = ({content, saveContent}) => {
-    const [value, setValue] = useState(content);
-    const [selectedTab, setSelectedTab] = useState("write");
-
-    const debouncedValue = useDebounce(value, 1000);
-
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(content));
+    const [isTyping, setIsTyping] = useState(false);
+        
     useEffect(() => {
-	if (debouncedValue !== content) {
-	    //console.log('saving content to server', debouncedValue);
-	    saveContent(debouncedValue);
-	}   
-    }, [debouncedValue]);
-    
-    useEffect(() => {
-	if (content !== value) {
-	    setValue(content);
+        if (editorState && editorState.text) {
+            console.log('MarkdownContentEditor saving content', editorState.text);
+            saveContent(editorState.text);
+        }
+    }, [editorState]);
+
+    const handleKeyCommand = (command, editorState) => {
+	const newState = RichUtils.handleKeyCommand(editorState, command);
+	if (newState) {
+	    setEditorState(editorState);
+	    return "handled";
 	}
-    }, [content]);
+
+	return "not-handled";
+    };
+
+    const onLinkClick = (...stuff) => {
+        console.log('onLinkClick', stuff);
+    };
     
+    const onImageClick = (...stuff) => {
+        console.log('onImageClick', stuff);
+    };
+
     return (
-	<ReactMde value={value}
-		  onChange={setValue}
-		  selectedTab={selectedTab}
-		  onTabChange={setSelectedTab}
-		  generateMarkdownPreview={markdown =>
-					   Promise.resolve(splitRender(markdown))
-					   }
-					   />
+        <div className="editor">
+          <div className="editor-buttons">
+                      <button
+                        className="editor-action"
+                        onClick={onLinkClick}
+        aria-label="Link"
+                      >
+                        <span className="glyphicon glyphicon-link" aria-hidden="true" />
+                      </button>
+            <button
+              className="editor-action"
+              onClick={onImageClick}
+              aria-label="Image"
+            >
+              <span className="glyphicon glyphicon-picture" aria-hidden="true" />
+            </button>
+          </div>
+          <Editor autoFocus
+                  className="editor-textarea"
+                  editorState={editorState}
+		  onKeyCommand={handleKeyCommand}
+                  spellCheck={true}
+	          onChange={setEditorState} />
+        </div>
     );
 };
 
 export default MarkdownContentEditor;
 
-// Hook
-function useDebounce(value, delay) {
-  // State and setters for debounced value
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(
-
-    () => {
-      // Update debounced value after delay
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-
-      // Cancel the timeout if value changes (also on delay change or unmount)
-      // This is how we prevent debounced value from updating if value is changed ...
-      // .. within the delay period. Timeout gets cleared and restarted.
-
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-
-    [value, delay] // Only re-call effect if value or delay changes
-  );
-
-  return debouncedValue;
-}

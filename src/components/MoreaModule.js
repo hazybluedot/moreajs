@@ -9,6 +9,9 @@ import {Tabs, Tab} from 'react-bootstrap';
 import store from "../redux/store";
 import { fetchItems } from "../redux/actions";
 
+import useSWR from "swr";
+//import {fetcher} from "../async";
+
 import MoreaItemContainer from "./MoreaItemContainer.jsx";
 
 const renderTabs = (items, resources, env) => (
@@ -18,7 +21,11 @@ const renderTabs = (items, resources, env) => (
 );
 
 const MoreaItemsContainer = ({items, item, children, isFetching, fetchItems}) => {
-
+    /*
+    const {swrItemList, error, isFetching} = useSWR(null, fetcher);
+    
+    console.log('swrItemList', swrItemList, error, isFetching);
+    */
     useEffect(() => {
 	if (items.length == 0 && !isFetching) {
 	    fetchItems();
@@ -69,4 +76,12 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MoreaItemsContainer);
+const MoreaModule = ({morea_id}) => {
+    return (
+	    <MoreaItemContainer canEdit={true} morea_id={morea_id} morea_type="module" />
+    );
+};
+
+export default MoreaModule;
+
+//export default connect(mapStateToProps, mapDispatchToProps)(MoreaItemsContainer);

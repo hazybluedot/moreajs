@@ -4,14 +4,23 @@ import efmd, {splitRender, render} from 'efmarkdown';
 import postProcess from '../postProcess.js';
 
 class MarkdownContent extends React.Component {
+    
     componentDidMount() {
+	this.handleUpdate = this.handleUpdate.bind(this);
+	this.handleUpdate();
+    }
+
+    componentDidUpdate() {
+	this.handleUpdate();
+    }
+
+    handleUpdate() {
 	this.el.innerHTML = splitRender(this.props.content);
 	
 	//this.handleChange = this.handleChange.bind(this);
 	//this.el.addEventListener('change', this.handleChange);
 	postProcess(this.el, this.props.resources, this.props.env);
     }
-    
     /*
   componentWillUnmount() {
     //this.el.removeEventListener('change', this.handleChange);
@@ -22,14 +31,10 @@ class MarkdownContent extends React.Component {
   }*/
   
     render() {
-	if (this.props.editing) {
-	    return <div>Editor placeholder</div>;
-	} else {
-	    return (
+	return (
 		<div className="module-content efmarkdown"
-		     ref={el => this.el = el} />
-	    );
-	}
+	    ref={el => this.el = el} />
+	);
     }
 }
 

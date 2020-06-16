@@ -9,29 +9,28 @@ import PropTypes from "prop-types";
 import ErrorBoundary from "./ErrorBoundary";
 import SourceComment from "./SourceComment";
 import MarkdownContent from "./MarkdownContent";
+import MarkdownContentEditor from "./MarkdownContentEditor.jsx";
 
 //TODO: consider whether this is the only place we need state information about isFetching, pending, etc. if it is,
 // we could us the useAsync hook from usehooks.com for local state and simplify the redux store
 
-const MoreaItem = ({item, options, resources, env, children, isEditing, saveItem}) => {
-    const [itemState, setItem] = useState(item);
-            
-    const updateContent = (content) => {
-	const newState = {...itemState, content: content};
-	setItem(newState);
-	saveItem(newState);
+const MoreaItem = ({item, options, resources, env, children, isEditing, onChange}) => {
+
+    const saveContent = (newContent) => {
+	const newState = {...item, content: newContent};
+	//setItem(newState);
+	onChange(newState);
     };
     
     let className = "morea-" + item.morea_type;
     const slug = slugger(className + " " + item.title); 
-    const content = itemState.content ? (isEditing ? <MarkdownContentEditor
-					 content={itemState.content}
-					 saveContent={updateContent} /> :
-					 <MarkdownContent
-					 content={itemState.content}
-					 resources={resources} env={env}
-					 editing={editing}
-					 />) : "";
+    const content = item.content ? (isEditing ? <MarkdownContentEditor
+				                  content={item.content}
+				                  saveContent={saveContent} />:
+				    <MarkdownContent
+				    content={item.content}
+				    resources={resources} env={env}
+				    />) : "";
     
     return (
 	<section className={className} id={slug}>
