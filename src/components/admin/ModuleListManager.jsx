@@ -28,6 +28,7 @@ const cleanKey = (type, id) => {
 
 function denormalizeModule(library, moduleId) {
     let module = library[moduleId];
+    /*
     const childIds = moreaTypes
         .filter(mt => mt.children_key)
         .reduce((acc, mt) => {
@@ -35,8 +36,8 @@ function denormalizeModule(library, moduleId) {
             //acc.concat(module[key]);
             const keys = module[mt.children_key] ? module[mt.children_key].map(childId => cleanKey(mt.type, childId)) : [];
             return [...acc, ...keys];
-        }, []);
-    module.children = childIds.map((key) => library[key]).filter(item => item);
+        }, []);*/
+    module.children = module.components.map((key) => library[key]).filter(item => item);
     return module;
 }
 
