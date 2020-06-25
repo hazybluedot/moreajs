@@ -5,7 +5,7 @@
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js --json > stats.json",
     "dev": "webpack --config webpack.dev.js",
-    "stage": "npm run dev && scp dist/moreajs.test.js efcms:~/www/js/moreajs.test.js",
+    "stage": "scp dist/moreajs.test.js efcms:~/www/js/moreajs.test.js",
     "lint": "eslint --fix app/*.js"
   },
   "author": "Darren K Maczka <dkm@utk.ed>",
@@ -16,19 +16,24 @@
     "url": "git://github.com/hazybluedot/numeric_calc_viz.git"
   },
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "bootstrap": "^4.5.0",
     "draft-js": "^0.11.6",
     "highlight.js": "^9.18.1",
+    "isomorphic-unfetch": "^3.0.0",
     "markdown-draft-js": "^2.2.0",
     "md-draft-js": "^3.4.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
+    "react-icons": "^3.10.0",
     "react-markdown": "^4.3.1",
     "react-mde": "^10.0.3",
     "react-router-dom": "^5.2.0",
     "slugger": "^1.0.1",
+    "styled-components": "^5.1.1",
     "svg_highlight": "file:../svg-element-interaction",
     "swr": "^0.2.2",
     "throttle-debounce": "^2.1.0"

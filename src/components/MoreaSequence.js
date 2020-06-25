@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
-import MoreaModule from "./MoreaModule.js"
-import ErrorBoundary from "./ErrorBoundary.js"
+import MoreaModule from "./MoreaModule"
+import ErrorBoundary from "./ErrorBoundary"
 import {Tabs, Tab} from 'react-bootstrap';
 
 function renderModule(module, idx, options, resources, env) {    

@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import ErrorBoundary from "./ErrorBoundary";
 import SourceComment from "./SourceComment";
 import MarkdownContent from "./MarkdownContent";
-import MarkdownContentEditor from "./MarkdownContentEditor.jsx";
+import MarkdownContentEditor from "./admin/MarkdownContentEditor.jsx";
 
 //TODO: consider whether this is the only place we need state information about isFetching, pending, etc. if it is,
 // we could us the useAsync hook from usehooks.com for local state and simplify the redux store
@@ -17,9 +17,9 @@ import MarkdownContentEditor from "./MarkdownContentEditor.jsx";
 const MoreaItem = ({item, options, resources, env, children, isEditing, onChange}) => {
 
     const saveContent = (newContent) => {
-	const newState = {...item, content: newContent};
-	//setItem(newState);
-	onChange(newState);
+		const newState = {...item, content: newContent};
+		//setItem(newState);
+		onChange(newState);
     };
     
     let className = "morea-" + item.morea_type;

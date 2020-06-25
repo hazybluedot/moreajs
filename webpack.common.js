@@ -12,7 +12,7 @@ module.exports = {
 	rules: [
 	  {
 		test: /.jsx?$/,
-		loader: 'babel-loader',
+		loader: 'babel-loader?cacheDirectory',
 		exclude: /node_modules/,
 	  },
 	  {
@@ -20,5 +20,8 @@ module.exports = {
 		use: ["style-loader", "css-loader"],
 	  }
 	]
+  },
+  resolve: {
+	  extensions: ['.js', '.jsx']
   }
 };

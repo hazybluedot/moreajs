@@ -1,47 +1,21 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 
-import MoreaItem from "./MoreaItem.js";
+import MoreaItem from "./MoreaItem";
 
 import slugger from "slugger";
 import {Tabs, Tab} from 'react-bootstrap';
-import store from "../redux/store";
 import { fetchItems } from "../redux/actions";
 
 import useSWR from "swr";
-//import {fetcher} from "../async";
 
-import MoreaItemContainer from "./MoreaItemContainer.jsx";
+import MoreaItemContainer from "./MoreaItemContainer";
 
 const renderTabs = (items, resources, env) => (
 	<Tabs defaultActiveKey={items[0].morea_id} id="some-tab-example">
 	{items.map((item) => (<Tab key={item.morea_id} eventKey={item.morea_id} title={item.title}><MoreaItem title={item.title} item={item} resources={resources} env={env} classNames={[]} /></Tab>))}
     </Tabs>
 );
-
-const MoreaItemsContainer = ({items, item, children, isFetching, fetchItems}) => {
-    /*
-    const {swrItemList, error, isFetching} = useSWR(null, fetcher);
-    
-    console.log('swrItemList', swrItemList, error, isFetching);
-    */
-    useEffect(() => {
-	if (items.length == 0 && !isFetching) {
-	    fetchItems();
-	}
-      }, []);
-    
-    if  (items.length > 0 && item) {
-	return (
-		<MoreaItemContainer {...item} canEdit={true}>
-		{children}
-	    </MoreaItemContainer>
-	);
-    } else {
-	return (<div>Loading Items</div>);
-    }
-};
 
 const createChildItems = (container, state) => {
     if (container === undefined) {
@@ -83,5 +57,3 @@ const MoreaModule = ({morea_id}) => {
 };
 
 export default MoreaModule;
-
-//export default connect(mapStateToProps, mapDispatchToProps)(MoreaItemsContainer);

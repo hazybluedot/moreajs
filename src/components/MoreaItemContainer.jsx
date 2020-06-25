@@ -3,14 +3,13 @@ import useSWR from "swr";
 import PropTypes from "prop-types";
 //import { connect } from "react-redux";
 
-import {fetcher, itemFetcher, putItem} from "../async";
+import {itemFetcher, putItem} from "../lib/efapi";
 
 //import { fetchItems, saveItem } from "../redux/actions";
 
-import MoreaItem from "./MoreaItem.js";
-import MoreaItemControls from "./MoreaItemControls.jsx";
+import MoreaItem from "./MoreaItem";
+import MoreaItemControls from "./admin/MoreaItemControls";
 import ErrorBoundary from "./ErrorBoundary";
-import useDebounce from "../useDebounce";
 
 const Messages = ({messages}) => {
     return (
@@ -20,43 +19,53 @@ const Messages = ({messages}) => {
     );
 };
 
+function isEqual(item1, item2) {
+    const keys1 = Object.keys(item1),
+          keys2 = Object.keys(item2);
+
+    if (keys1 !== keys2) return false;
+
+    keys1.forEach(key => {
+        if (item1[key] !== item2[key]) return false;
+    });
+
+    return true;
+}
+
 function MoreaItemContainer({canEdit, ...item}) {
     console.group('MoreaItemContainer');
-    const [localItem, setItem] = useState(item);
-    const [isStable, setIsStable] = useState(true);
+    const [isStale, setIsStale] = useState(true);
     const [state, setState] = useState("published");
+    const [localItem, setItem] = useState(item);
     const {data, error, isValidating, mutate} = useSWR([item.morea_type, item.morea_id, state === "published" ? "published" : "working"], itemFetcher);
-    console.log('item', item, 'state', state);
-
-    const debouncedValue = localItem && localItem.content ? useDebounce(localItem, 1000) : null;
+    console.log('item', localItem, 'state', state);
+    
+    console.groupEnd();
     
     useEffect(() => {
-        setItem(data);
-    }, [data]);
+        if (data && data.content && !isEqual(data, localItem)) {
+            setItem(data);
+        }
+    }, [data])
 
-    
-    useEffect(() => {
-	if (debouncedValue && debouncedValue !== item.content) {
-	    console.log('saving content to server', debouncedValue);
-            /*
-            putItem(debouncedValue).then(data => {
-                mutate({...data, content: debouncedValue});
-                console.log('success', data);
-                setIsStable(true);
-            });*/
-	}   
-    }, [debouncedValue]);
-    
-    const onChange = (item) => {
-        console.log('setItem', item);
-        setIsStable(false);
-        setItem(item);
-        //mutate(item);
-        //mutate(item);
+    const onChange = (newItem) => {
+        if (newItem && newItem.content) {
+            setItem(newItem);
+            console.log('storing item to server', newItem);
+            putItem(newItem);
+            mutate(newItem);
+        }
     };
 
-    console.groupEnd();
+    //const debouncedContent = localItem && localItem.content ? useDebounce(localItem.content, 1000) : null;
 
+    /*useEffect(() => {
+        if (debouncedContent) {
+            console.log('Content debounded');
+        }
+    }, [debouncedContent]);*/
+
+    if (error) console.log('SWR error', error);
     if (error) return <div>failed to load</div>;
     
     return (
@@ -64,7 +73,7 @@ function MoreaItemContainer({canEdit, ...item}) {
 	  {/*<Messages messages={messages} />*/}
 	  {/*if editable, then <MoreaItemControls />*/}
           <ErrorBoundary>
-	    { canEdit && <MoreaItemControls view={state} visibility="Public" setState={setState} isLoading={!isStable} /> }
+	    { canEdit && <MoreaItemControls view={state} visibility="Public" setState={setState} isStale={isStale} /> }
           </ErrorBoundary>
 	  {/*if state === published then <MoreaItem with published item />*/}
 	  {/*if state === working then <MoreaItem with working item />*/}

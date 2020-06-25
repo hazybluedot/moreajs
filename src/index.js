@@ -8,7 +8,7 @@ import MoreaReact from './morea-react.js';
 
 import React from "react";
 import ReactDOM from 'react-dom'
-import MoreaApp from './MoreaApp.js'
+import MoreaApp from './MoreaApp'
 
 const morea_render = new Morea(config)
 
